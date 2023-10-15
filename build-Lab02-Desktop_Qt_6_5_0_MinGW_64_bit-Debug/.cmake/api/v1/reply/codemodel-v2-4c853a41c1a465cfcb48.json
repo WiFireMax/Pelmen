@@ -1,0 +1,79 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Debug-f02e0d147b127d34788c.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "Lab02",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "Lab02::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-Lab02-Debug-e2848a5ec35c619706d8.json",
+					"name" : "Lab02",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "Lab02_autogen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-Lab02_autogen-Debug-7f48c6afd6138d8853b1.json",
+					"name" : "Lab02_autogen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "Lab02_autogen_timestamp_deps::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-Lab02_autogen_timestamp_deps-Debug-ff0be27fe21908a3432e.json",
+					"name" : "Lab02_autogen_timestamp_deps",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "C:/Users/Maksim/Desktop/Pelmen/build-Lab02-Desktop_Qt_6_5_0_MinGW_64_bit-Debug",
+		"source" : "C:/Users/Maksim/Desktop/Pelmen/Lab02"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 4
+	}
+}

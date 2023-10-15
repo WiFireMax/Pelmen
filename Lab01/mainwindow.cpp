@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     QGraphicsScene* scene = new QGraphicsScene();
     int maxX=1000, maxY=1000;
-    int onePixDistance = 4000; //m
+    int onePixDistance = 1500; //m
     int TxPower = 23;
     int antGain = 12;
     float freq=2.5;
@@ -27,7 +27,7 @@ MainWindow::MainWindow(QWidget *parent)
             distance =sqrt (pow(abs(cellPosX - i), 2) + pow(abs(cellPosY-j), 2));
             distance *= onePixDistance;
             float sigPower = TxPower + antGain - PL(freq, distance);
-            if(sigPower < -44 && sigPower >= -54){
+            if(sigPower >= -54){
                 p.setPen(QColor(255, 0, 0, 255)); // <-- задание цвета красный
             }
             if (sigPower < -54 && sigPower >= -64) {
@@ -54,7 +54,7 @@ MainWindow::MainWindow(QWidget *parent)
             if (sigPower < -124 && sigPower >= -134) {
                 p.setPen(QColor(0, 130, 255, 255)); //синий
             }
-            if (sigPower < -134 && sigPower >= -144) {
+            if (sigPower < -134) {
                 p.setPen(QColor(40, 0, 255, 255)); //глубокий синий
             }
             p.drawPoint(i, j);
@@ -71,4 +71,3 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
 }
-
