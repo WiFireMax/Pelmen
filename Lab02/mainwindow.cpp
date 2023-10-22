@@ -4,68 +4,85 @@
 #include <QPainter>
 #include <time.h>
 float PL(float f, float d){
-    return 28 + 22 * log10(f) + 20*log10(d);
+    return 28 + 22 * log10(d) + 20*log10(f);
 }
 int N_of_obstructions(QPainter* Pix, QPixmap* Map, int x0, int x1, int y0, int y1) {
     int Number=0;
+    QImage image = Map->toImage();
     int deltax = abs(x1 - x0);
     int deltay = abs(y1 - y0);
-    float error = 0;
-    float deltaerr = (deltay + 1) / (deltax + 1);
-    int y = y0;
-    int diry = y1 - y0;
-    if (diry > 0) {
-        diry = 1;
+    int signx = x0 < x1 ? 1 : -1;
+    int signy = y0 < y1 ? 1 : -1;
+    int error = deltax - deltay;
+    QRgb color1=image.pixel(x1, y1);
+    int red1 = qRed(color1);
+    int green1 = qGreen(color1);
+    int blue1 = qBlue(color1);
+    if (red1==34 && green1==34 && blue1==34) {
+        Number+=1;
     }
-    if (diry < 0) {
-        diry = -1;
-    }
-    for (int x=x0; x<x1; x++) {
-        QImage image = Map->toImage();
-        QRgb color=image.pixel(x, y);
+    while (x0 != x1 || y0 != y1) {
+
+        QRgb color=image.pixel(x0, y0);
         int red = qRed(color);
         int green = qGreen(color);
         int blue = qBlue(color);
-        if (red==0 && green==0 && blue==0) {
+
+        if (red==34 && green==34 && blue==34) {
             Number+=1;
         }
-        Pix->setPen(QColor(0, 100, 0, 255));
-        Pix->drawPoint(x, y);
-        error = error + deltaerr;
-        if (error >= 1.0) {
-            y = y + diry;
-            error = error - 1.0;
+        int error2 = error*2;
+        if (error2 > -deltay) {
+            error -= deltay;
+            x0 += signx;
+        }
+        if (error2 < deltax) {
+            error += deltax;
+            y0 += signy;
         }
     }
     return Number;
 }
 struct Obstruction { //препятствия
-    struct Material {
-        int irrgrass; //IRR стекло
-        int doublegrass; //стеклопакет
-        int concrete; //бетон
-        int tree; //дерево
-    };
+    bool irrgrass; //IRR стекло
+    bool doublegrass; //стеклопакет
+    bool concrete; //бетон
+    bool tree; //дерево
+    float Decay(float f) {
+        if (irrgrass == true) {
+        return 23+0.3*f;
+        }
+        if (doublegrass == true) {
+        return 2+0.2*f;
+        }
+        if (concrete == true) {
+        return 5+4*f;
+        }
+        if (tree == true) {
+        return 4.85+0.12*f;
+        }
+        else {
+        return 0;
+        }
+    }
     int line(QPainter* Pix, int x0, int x1, int y0, int y1) { //линия
         int deltax = abs(x1 - x0);
         int deltay = abs(y1 - y0);
-        float error = 0;
-        float deltaerr = (deltay + 1) / (deltax + 1);
-        int y = y0;
-        int diry = y1 - y0;
-        if (diry > 0) {
-            diry = 1;
-        }
-        if (diry < 0) {
-            diry = -1;
-        }
-        for (int x=x0; x<x1; x++) {
-            Pix->setPen(QColor(0, 0, 0, 255));
-            Pix->drawPoint(x, y);
-            error = error + deltaerr;
-            if (error >= 1.0) {
-                y = y + diry;
-                error = error - 1.0;
+        int signx = x0 < x1 ? 1 : -1;
+        int signy = y0 < y1 ? 1 : -1;
+        int error = deltax - deltay;
+        Pix->setPen(QColor(34, 34, 34, 255));
+        Pix->drawPoint(x1, y1);
+        while (x0 != x1 || y0 != y1) {
+            Pix->drawPoint(x0, y0);
+            int error2 = error*2;
+            if (error2 > -deltay) {
+                error -= deltay;
+                x0 += signx;
+            }
+            if (error2 < deltax) {
+                error += deltax;
+                y0 += signy;
             }
         }
         return 0;
@@ -76,7 +93,7 @@ struct Obstruction { //препятствия
         int delta = 1 - 2 * R;
         int error = 0;
         while (y >= x) {
-            Pix->setPen(QColor(0,0,0,255));
+            Pix->setPen(QColor(34,34,34,255));
             Pix->drawPoint(X1 + x, Y1 + y);
             Pix->drawPoint(X1 + x, Y1 - y);
             Pix->drawPoint(X1 - x, Y1 + y);
@@ -99,7 +116,7 @@ struct Obstruction { //препятствия
         return 0;
     }
     int square(QPainter* Pix, int x0, int x1, int y0, int y1) {
-        Pix->setPen(QColor(0,0,0,255));
+        Pix->setPen(QColor(34,34,34,255));
         if (x0<x1) {
             for (int x=x0; x<x1; x++) {
                 Pix->drawPoint(x, y0);
@@ -132,7 +149,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     QGraphicsScene* scene = new QGraphicsScene();
     int maxX=1000, maxY=1000;
-    int onePixDistance = 1000; //m
+    int onePixDistance = 30; //m
     int TxPower = 23;
     int antGain = 12;
     float freq=2.5;
@@ -141,12 +158,31 @@ MainWindow::MainWindow(QWidget *parent)
     int cellPosY=rand()%999;
     QPixmap map(maxX, maxY); // создаем карту для рисования
     QPainter p(&map);
+
+    struct Obstruction Stone;
+    Stone.concrete = true;
+    Stone.circle(&p, 700, 700, 200);
+
+    struct Obstruction Fence;
+    Fence.tree = true;
+    Fence.line(&p, 200, 700, 800, 600);
+
+    struct Obstruction Office;
+    Office.doublegrass = true;
+    Office.square(&p, 200, 500, 100, 400);
+
+    QImage image = map.toImage();
+
     for(int i = 0; i < maxX; i++){
         for(int j = 0; j < maxY; j++){
             float distance = 0;
             distance =sqrt (pow(abs(cellPosX - i), 2) + pow(abs(cellPosY-j), 2));
             distance *= onePixDistance;
             float sigPower = TxPower + antGain - PL(freq, distance);
+            int NumObs=N_of_obstructions(&p, &map, cellPosX, i, cellPosY, j);
+            if (NumObs > 0) {
+                    sigPower=sigPower-NumObs*Stone.Decay(freq);
+            }
             if(sigPower >= -54){
                 p.setPen(QColor(255, 0, 0, 255)); // <-- задание цвета красный
             }
@@ -177,22 +213,21 @@ MainWindow::MainWindow(QWidget *parent)
             if (sigPower < -134) {
                 p.setPen(QColor(40, 0, 255, 255)); //глубокий синий
             }
+
+            QRgb color=image.pixel(i, j);
+            int red = qRed(color);
+            int green = qGreen(color);
+            int blue = qBlue(color);
+            if (red==34 && green==34 && blue==34) {
+                p.setPen(QColor(34, 34, 34, 255));
+            }
+
             p.drawPoint(i, j);
         }
     }
-    p.setPen(QColor(255, 255, 255, 127));
+    p.setPen(QColor(255, 255, 255, 255));
     p.drawPoint(cellPosX, cellPosY);
-    // /////////////////////////////////////////////////////////////////////////////////////
-    struct Obstruction Stone;
-    Stone.line(&p, 50, 400, 300, 800);
-    Stone.circle(&p, 300, 500, 200);
-    Stone.square(&p, 700, 900, 600, 800);
-    int Num=N_of_obstructions(&p, &map, cellPosX, 500, cellPosY, 500);
-    QString text=QString::number(Num);
-    QLabel *label = new QLabel();
-    label->setText(text);
-    label->show();
-    // /////////////////////////////////////////////////////////////////////////////////////
+
     p.end();
     scene->addPixmap(map);
     QGraphicsView* view = new QGraphicsView(scene);
