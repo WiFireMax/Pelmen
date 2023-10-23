@@ -217,7 +217,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     struct Obstruction Fence; //забор
     Fence.tree = true;
-    Fence.line(&p, 200, 700, 800, 600);
+    Fence.line(&p, 200, 400, 600, 800);
 
     struct Obstruction Office; //офис
     Office.doublegrass = true;
