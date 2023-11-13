@@ -22,6 +22,12 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(Lab02
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+        MatSignal.cpp
+        MatSignal.h
+        DrawObstructions.cpp
+        DrawObstructions.h
+        DrawPixMap.h
+        DrawPixMap.cpp
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET Lab02 APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
@@ -43,14 +49,21 @@ endif()
 
 target_link_libraries(Lab02 PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 
+# Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
+# If you are developing for iOS or macOS you should consider setting an
+# explicit, fixed bundle identifier manually though.
+if(${QT_VERSION} VERSION_LESS 6.1.0)
+  set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.Lab02)
+endif()
 set_target_properties(Lab02 PROPERTIES
-    MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
+    ${BUNDLE_ID_OPTION}
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
     MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
     MACOSX_BUNDLE TRUE
     WIN32_EXECUTABLE TRUE
 )
 
+include(GNUInstallDirs)
 install(TARGETS Lab02
     BUNDLE DESTINATION .
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
