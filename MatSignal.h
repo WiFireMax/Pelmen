@@ -2,5 +2,5 @@
 #define MATSIGNAL_H
 
 float PL(float f, float d);
-float Delay(int N, float f);
+float Fading(int N, float f);
 #endif // MATSIGNAL_H

@@ -3,7 +3,7 @@
 float PL(float f, float d){
     return 28 + 22 * log10(d) + 20*log10(f);
 }
-float Delay(int N, float f) { //N-номер места в массиве за определённый материал
+float Fading(int N, float f) { //N-номер места в массиве за определённый материал
     if (N == 3) { //IRR стекло
         return 23+0.3*f;
     }

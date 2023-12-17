@@ -18,7 +18,7 @@ void DrawPixMap(QPainter* p, QImage* image, QPixmap* map, int maxX, int maxY, in
             N_of_obstructions(p, map, NumObs, cellPosX, i, cellPosY, j); //заполнение массива
             if (NumObs[0] > 0 || NumObs[1] > 0 || NumObs[2] > 0 || NumObs[3] > 0) {
                 //затухание
-                sigPower=sigPower-NumObs[0]*Delay(0, freq)-NumObs[1]*Delay(1, freq)-NumObs[2]*Delay(2, freq)-NumObs[3]*Delay(3, freq);
+                sigPower=sigPower-NumObs[0]*Fading(0, freq)-NumObs[1]*Fading(1, freq)-NumObs[2]*Fading(2, freq)-NumObs[3]*Fading(3, freq);
             }
             if(sigPower >= -54){
                 p->setPen(QColor(255, 0, 0, 255)); // <-- задание цвета красный
