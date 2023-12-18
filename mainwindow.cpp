@@ -19,9 +19,9 @@ MainWindow::MainWindow(QWidget *parent)
     QPixmap map(maxX, maxY); // создаем карту для рисования
     QPainter p(&map);
 
-    struct Obstruction Stone; //стена
-    Stone.concrete = true;
-    Stone.circle(&p, 300, 850, 130);
+    struct Obstruction Wall; //стена
+    Wall.concrete = true;
+    Wall.circle(&p, 300, 850, 130);
 
     struct Obstruction Fence; //забор
     Fence.wood = true;
